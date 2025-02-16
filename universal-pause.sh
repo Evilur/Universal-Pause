@@ -5,7 +5,7 @@
 # -v: volume <FACTOR>
 # $1: the file name in the assets directory
 play_audio() {
-    play -qv 0.1 /usr/share/UniversalPause/$1
+    play -qv 0.1 /usr/share/UniversalPause/sound/$1
 }
 
 # Get the currently active window and get the process ID
