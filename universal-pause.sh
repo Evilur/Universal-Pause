@@ -1,11 +1,14 @@
 #!/usr/bin/sh
 
+# Root directory of the installed program
+ROOT_DIR=/usr/share/UniversalPause
+
 # Play sound from the assets directory
 # -q: quiet mod
 # -v: volume <FACTOR>
 # $1: the file name in the assets directory
 play_audio() {
-    play -qv 0.1 /usr/share/UniversalPause/sound/$1
+    play -qv 0.1 $ROOT_DIR/sound/$1
 }
 
 # Get the currently active window and get the process ID
