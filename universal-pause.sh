@@ -20,7 +20,7 @@ if [[ $process_stats == *"T"* ]]; then
     # If the process has been stopped already, send the continue SIGNAL
     if `kill -CONT $process_pid`; then
         echo Process \"$process_name\" \($process_pid\) has been continued
-        play_audio continue.wav
+        play_audio pause-off.wav
     else
         echo Can\'t continue the process \"$process_name\" \($process_pid\)
         exit 100
@@ -29,7 +29,7 @@ else
     # If the process is running, send the stop SIGNAL
     if `kill -STOP $process_pid`; then
         echo Process \"$process_name\" \($process_pid\) has been stopped
-        play_audio stop.wav
+        play_audio pause-on.wav
     else
         echo Can\'t stop the process \"$process_name\" \($process_pid\)
         exit 101

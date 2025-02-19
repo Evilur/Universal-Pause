@@ -11,7 +11,7 @@ install:
 	mkdir $(TARGET)
 	cp -r sound $(TARGET)/
 
-	# Give the correct permissions
+	# Set the correct permissions
 	chmod 755 $(TARGET)/sound
 	chmod 644 $(TARGET)/sound/*
 
