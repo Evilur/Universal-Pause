@@ -1,40 +1,47 @@
-#!/usr/bin/sh
+#!/usr/bin/env sh
 
 # Root directory of the installed program
-ROOT_DIR=/usr/share/UniversalPause
+readonly ROOT_DIR=/usr/share/UniversalPause
+export ROOT_DIR
 
-# Play sound from the assets directory
-# -q: quiet mod
-# -v: volume <FACTOR>
-# $1: the file name in the assets directory
-play_audio() {
-    play -qv 0.1 $ROOT_DIR/sound/$1
+# Add a script directory to the PATH variable
+PATH=$ROOT_DIR/script:$PATH
+
+# Get the locale filename
+case $LANG in
+    ru_*)
+        readonly LOCALE=ru_RU
+        ;;
+    *)
+        readonly LOCALE=en_US
+        ;;
+esac
+export LOCALE
+
+# Arguments for access from a function
+readonly args=$@
+
+# Check if the required argument exists in the arguments
+# $1: argument to check
+check_arg() {
+    if [[ " $args " == *" $1 "* ]]; then echo 1; fi
 }
 
-# Get the currently active window and get the process ID
-process_pid=`xdotool getactivewindow getwindowpid`
-
-# Get the process stats and its name
-process_stats=`ps --no-headers -o stat $process_pid`
-process_name=`ps --no-headers -o comm $process_pid`
-
-# Has the process been stopped already?
-if [[ $process_stats == *"T"* ]]; then
-    # If the process has been stopped already, send the continue SIGNAL
-    if `kill -CONT $process_pid`; then
-        echo Process \"$process_name\" \($process_pid\) has been continued
-        play_audio pause-off.wav
-    else
-        echo Can\'t continue the process \"$process_name\" \($process_pid\)
-        exit 100
-    fi
-else
-    # If the process is running, send the stop SIGNAL
-    if `kill -STOP $process_pid`; then
-        echo Process \"$process_name\" \($process_pid\) has been stopped
-        play_audio pause-on.wav
-    else
-        echo Can\'t stop the process \"$process_name\" \($process_pid\)
-        exit 101
-    fi
+# Check for -h, --help arguments. If there is such an argument, 
+# print a help message and exit the program
+if [[ $(check_arg -h) || $(check_arg --help) ]]; then
+    help.sh
+    exit 0
 fi
+
+# Check for -r, --run arguments. If there is such an argument, 
+# execute the script and exit the program
+if [[ $(check_arg -r) || $(check_arg --run) ]]; then
+    pause-focused.sh
+    exit 0
+fi
+
+# If there were no valid arguments, then display a help message and 
+# exit with error code
+help.sh
+exit 100
