@@ -27,28 +27,28 @@ check_arg() {
     if [[ " $args " == *" $1 "* ]]; then echo 1; fi
 }
 
-# Check for -h, --help arguments. If there is such an argument, 
+# Check for -h, --help arguments. If there is such an argument,
 # print a help message and exit
 if [[ $(check_arg -h) || $(check_arg --help) ]]; then
     help.sh
     exit 0
 fi
 
-# Check for -v, --version arguments. If there is such an argument, 
+# Check for -v, --version arguments. If there is such an argument,
 # print the version and exit
 if [[ $(check_arg -v) || $(check_arg --version) ]]; then
     version.sh
     exit 0
 fi
 
-# Check for -r, --run arguments. If there is such an argument, 
+# Check for -r, --run arguments. If there is such an argument,
 # execute the script and exit
 if [[ $(check_arg -r) || $(check_arg --run) ]]; then
     pause-focused.sh
     exit 0
 fi
 
-# If there were no valid arguments, then display a help message and 
+# If there were no valid arguments, then display a help message and
 # exit with error code
 help.sh
 exit 100

@@ -12,7 +12,7 @@ int main(const int arg_c, const char* const arg_v[])
     /* Infinite read the events from the device */
     printf("Start listening to device input data...\n");
     for (;;) {
-        /* Read the event 
+        /* Read the event
          * In case of an error, exit the loop */
         struct input_event event;
         if (read(device, &event, sizeof(event)) == -1) break;
@@ -24,7 +24,7 @@ int main(const int arg_c, const char* const arg_v[])
         printf("Code=%d Value=%d\n", event.code, event.value);
     }
 
-    /* This code is executed only when 
+    /* This code is executed only when
      * there is an error in reading the device */
     printf("It looks like the input device has been disabled");
     return 100;

@@ -23,15 +23,15 @@ struct key_state {
     signed int value;           /* Event value */
 };
 
-/* The command that needs to be executed when 
+/* The command that needs to be executed when
  * all the necessary keys are pressed */
 const char* pause_command = NULL;
 
-/* An array that stores data about the current 
+/* An array that stores data about the current
  * event state required by the hotkey */
 struct key_state* current_states = NULL;
 
-/* An array that stores the necessary states 
+/* An array that stores the necessary states
  * for triggering a hotkey */
 struct key_state* hotkey_states = NULL;
 

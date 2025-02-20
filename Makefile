@@ -19,7 +19,7 @@ install:
 
 	# Set the correct permissions for directories
 	chmod 755 $(TARGET)/locale
-	chmod 755 $(TARGET)/locale/*	
+	chmod 755 $(TARGET)/locale/*
 	chmod 755 $(TARGET)/script
 	chmod 755 $(TARGET)/sound
 
