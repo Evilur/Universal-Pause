@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+source $ROOT_DIR/locale/pause-focused/$LOCALE
+
 # Play sound from the assets directory
 # $1: the file name in the assets directory
 play_audio() {
@@ -19,19 +21,21 @@ process_name=$(ps --no-headers -o comm $process_pid)
 if [[ $process_stats == *"T"* ]]; then
     # If the process has been stopped already, send the continue SIGNAL
     if $(kill -CONT $process_pid); then
-        echo Process \"$process_name\" \($process_pid\) has been continued
+        printf "$CONTINUE_SUCCESS\n" $process_name $process_pid
         play_audio pause-off.wav
+        exit 0
     else
-        echo Can\'t continue the process \"$process_name\" \($process_pid\)
+        printf "$CONTINUE_FAILURE\n" $process_name $process_pid
         exit 100
     fi
 else
     # If the process is running, send the stop SIGNAL
     if $(kill -STOP $process_pid); then
-        echo Process \"$process_name\" \($process_pid\) has been stopped
+        printf "$STOP_SUCCESS\n" $process_name $process_pid
         play_audio pause-on.wav
+        exit 0
     else
-        echo Can\'t stop the process \"$process_name\" \($process_pid\)
+        printf "$STOP_FAILURE\n" $process_name $process_pid
         exit 101
     fi
 fi
