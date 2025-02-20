@@ -28,14 +28,21 @@ check_arg() {
 }
 
 # Check for -h, --help arguments. If there is such an argument, 
-# print a help message and exit the program
+# print a help message and exit
 if [[ $(check_arg -h) || $(check_arg --help) ]]; then
     help.sh
     exit 0
 fi
 
+# Check for -v, --version arguments. If there is such an argument, 
+# print the version and exit
+if [[ $(check_arg -v) || $(check_arg --version) ]]; then
+    version.sh
+    exit 0
+fi
+
 # Check for -r, --run arguments. If there is such an argument, 
-# execute the script and exit the program
+# execute the script and exit
 if [[ $(check_arg -r) || $(check_arg --run) ]]; then
     pause-focused.sh
     exit 0

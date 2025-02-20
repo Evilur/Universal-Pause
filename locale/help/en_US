@@ -5,9 +5,10 @@ Universal pause for Linux games. Allows you to pause non-pausable cutscenes
 and games. You can bind the command to a key and use it at the right moment.
 
 Options:
-    -h, --help      Print this message and exit
     -r, --run       Pause/unpause the active X-server window
+    -h, --help      Print this message and exit
+    -v, --version   Print the version and exit
 
 Examples:
-    universal-pause --help
     universal-pause --run
+    universal-pause --help
