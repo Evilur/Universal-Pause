@@ -17,24 +17,28 @@ export LOCALE
 # Get arguments
 for ((i = 1; i <= $#; i++)); do
     case ${!i} in
-        -h|--help) ARG_HELP=true;;
-        -v|--version) ARG_VERSION=true;;
+        # Set varibales to true to do something later
         -r|--run) ARG_RUN=true;;
+        -s|--silent) ARG_SILENT=true;;
+
+        # Print a help message and exit
+        -h|--help)
+            help.sh
+            exit 0
+            ;;
+
+        # Print the version and exit
+        --version)
+            version.sh
+            exit 0
+            ;;
     esac
 done
 
-# Check for -h, --help arguments. If there is such an argument,
-# print a help message and exit
-if [[ $ARG_HELP == true ]]; then
-    help.sh
-    exit 0
-fi
-
-# Check for -v, --version arguments. If there is such an argument,
-# print the version and exit
-if [[ $ARG_VERSION == true ]]; then
-    version.sh
-    exit 0
+# Check for -s, --silent arguments. If there is such an argument,
+# redirect all the output to the /dev/null
+if [[ $ARG_SILENT == true ]]; then
+    exec > /dev/null 2>&1
 fi
 
 # Check for -r, --run arguments. If there is such an argument,
