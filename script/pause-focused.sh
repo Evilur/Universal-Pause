@@ -26,6 +26,7 @@ if [[ $process_stats == *"T"* ]]; then
         exit 0
     else
         printf "$CONTINUE_FAILURE\n" $process_name $process_pid
+        play_audio error.wav
         exit 100
     fi
 else
@@ -36,6 +37,7 @@ else
         exit 0
     else
         printf "$STOP_FAILURE\n" $process_name $process_pid
+        play_audio error.wav
         exit 101
     fi
 fi
