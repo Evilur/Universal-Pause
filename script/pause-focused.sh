@@ -16,6 +16,7 @@ process_id=$(xdotool getactivewindow getwindowpid)
 # Check if the variable is empty
 if [ -z $process_id ]; then
     echo $EMPTY_VARIABLE
+    play_audio error.wav
     exit 100
 fi
 
