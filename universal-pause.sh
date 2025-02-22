@@ -5,7 +5,7 @@ readonly ROOT_DIR=/usr/share/UniversalPause
 export ROOT_DIR
 
 # Add a script directory to the PATH variable
-PATH=$ROOT_DIR/script:$PATH
+PATH=$ROOT_DIR/bin:$PATH
 
 # Get the locale filename
 case $LANG in
