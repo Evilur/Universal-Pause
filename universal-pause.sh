@@ -9,41 +9,37 @@ PATH=$ROOT_DIR/bin:$PATH
 
 # Get the locale filename
 case $LANG in
-    ru_*)
-        readonly LOCALE=ru_RU
-        ;;
-    *)
-        readonly LOCALE=en_US
-        ;;
+    ru_*) readonly LOCALE=ru_RU;;
+    *) readonly LOCALE=en_US;;
 esac
 export LOCALE
 
-# Arguments for access from a function
-readonly args=$@
-
-# Check if the required argument exists in the arguments
-# $1: argument to check
-check_arg() {
-    if [[ " $args " == *" $1 "* ]]; then echo 1; fi
-}
+# Get arguments
+for ((i = 1; i <= $#; i++)); do
+    case ${!i} in
+        -h|--help) ARG_HELP=true;;
+        -v|--version) ARG_VERSION=true;;
+        -r|--run) ARG_RUN=true;;
+    esac
+done
 
 # Check for -h, --help arguments. If there is such an argument,
 # print a help message and exit
-if [[ $(check_arg -h) || $(check_arg --help) ]]; then
+if [[ $ARG_HELP == true ]]; then
     help.sh
     exit 0
 fi
 
 # Check for -v, --version arguments. If there is such an argument,
 # print the version and exit
-if [[ $(check_arg -v) || $(check_arg --version) ]]; then
+if [[ $ARG_VERSION == true ]]; then
     version.sh
     exit 0
 fi
 
 # Check for -r, --run arguments. If there is such an argument,
 # execute the script and exit
-if [[ $(check_arg -r) || $(check_arg --run) ]]; then
+if [[ $ARG_RUN == true ]]; then
     pause-focused.sh
     exit 0
 fi
