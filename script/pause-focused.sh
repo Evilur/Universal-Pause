@@ -11,33 +11,40 @@ play_audio() {
 }
 
 # Get the currently active window and get the process ID
-process_pid=$(xdotool getactivewindow getwindowpid)
+process_id=$(xdotool getactivewindow getwindowpid)
+
+# Check if the variable is empty
+if [ -z $process_id ]; then
+    echo $EMPTY_VARIABLE
+    exit 100
+fi
 
 # Get the process stats and its name
-process_stats=$(ps --no-headers -o stat $process_pid)
-process_name=$(ps --no-headers -o comm $process_pid)
+process_stats=$(ps --no-headers -o stat $process_id)
+process_name=$(ps --no-headers -o comm $process_id)
 
 # Has the process been stopped already?
 if [[ $process_stats == *"T"* ]]; then
     # If the process has been stopped already, send the continue SIGNAL
-    if $(kill -CONT $process_pid); then
-        printf "$CONTINUE_SUCCESS\n" $process_name $process_pid
+    if $(kill -CONT $process_id); then
+        printf "$CONTINUE_SUCCESS\n" $process_name $process_id
         play_audio pause-off.wav
-        exit 0
     else
-        printf "$CONTINUE_FAILURE\n" $process_name $process_pid
-        play_audio error.wav
-        exit 100
-    fi
-else
-    # If the process is running, send the stop SIGNAL
-    if $(kill -STOP $process_pid); then
-        printf "$STOP_SUCCESS\n" $process_name $process_pid
-        play_audio pause-on.wav
-        exit 0
-    else
-        printf "$STOP_FAILURE\n" $process_name $process_pid
+        printf "$CONTINUE_FAILURE\n" $process_name $process_id
         play_audio error.wav
         exit 101
     fi
+else
+    # If the process is running, send the stop SIGNAL
+    if $(kill -STOP $process_id); then
+        printf "$STOP_SUCCESS\n" $process_name $process_id
+        play_audio pause-on.wav
+    else
+        printf "$STOP_FAILURE\n" $process_name $process_id
+        play_audio error.wav
+        exit 102
+    fi
 fi
+
+# Exit with the success code
+exit 0

@@ -1,3 +1,4 @@
+readonly EMPTY_VARIABLE='Не удается получить ID процесса'
 readonly CONTINUE_SUCCESS='Процесс "%s" (%s) был возобновлен'
 readonly CONTINUE_FAILURE='Невозможно возобновить процесс "%s" (%s)'
 readonly STOP_SUCCESS='Процесс "%s" (%s) был остановлен'

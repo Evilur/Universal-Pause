@@ -1,3 +1,4 @@
+readonly EMPTY_VARIABLE='Cannot get process ID'
 readonly CONTINUE_SUCCESS='Process "%s" (%s) has been continued'
 readonly CONTINUE_FAILURE='Can'\''t continue the process "%s" (%s)'
 readonly STOP_SUCCESS='Process "%s" (%s) has been stopped'
