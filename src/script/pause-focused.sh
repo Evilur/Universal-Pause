@@ -7,14 +7,14 @@ source $ROOT_DIR/locale/pause-focused/$LOCALE
 play_audio() {
     # -q: quiet mod
     # -v: volume <FACTOR>
-    play -qv 0.1 $ROOT_DIR/sound/$1
+    play -qv $VOLUME $ROOT_DIR/sound/$1
 }
 
 # Get the currently active window and get the process ID
 process_id=$(xdotool getactivewindow getwindowpid)
 
 # Check if the variable is empty
-if [ -z $process_id ]; then
+if [[ -z $process_id ]]; then
     echo $EMPTY_VARIABLE
     play_audio error.wav
     exit 100

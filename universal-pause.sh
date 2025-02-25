@@ -18,8 +18,8 @@ export LOCALE
 for ((i = 1; i <= $#; i++)); do
     case ${!i} in
         # Set varibales to true to do something later
-        -r|--run) ARG_RUN=true;;
-        -s|--silent) ARG_SILENT=true;;
+        -r|--run) readonly ARG_RUN=true;;
+        -s|--silent) readonly ARG_SILENT=true;;
 
         # Print a help message and exit
         -h|--help)
@@ -32,8 +32,25 @@ for ((i = 1; i <= $#; i++)); do
             version.sh
             exit 0
             ;;
+
+        # Set the volume percentage
+        -v|--volume)
+            # Get the next argument
+            let i+=1
+
+            # Set the volume variable
+            readonly VOLUME=${!i}
+            export VOLUME
+            ;;
     esac
 done
+
+# Check the VOLUME variable. If it wasn't initialized,
+# Set the fault volume level: 0.1
+if [ -z $VOLUME ]; then
+    readonly VOLUME=0.1
+    export VOLUME
+fi
 
 # Check for -s, --silent arguments. If there is such an argument,
 # redirect all the output to the /dev/null
