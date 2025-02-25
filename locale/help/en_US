@@ -14,5 +14,5 @@ Options:
 Examples:
     universal-pause --run
     universla-pause --run --volume 0.5
-    universal-pause --run
+    universal-pause --run --silent
     universal-pause --help
