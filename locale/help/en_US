@@ -9,10 +9,12 @@ Options:
     -h, --help      Print this message and exit
     -s, --silent    Disable terminal output
     -v, --volume    Set the volume (0.1 by default)
+    -t, --evtest    Test the input device events (evdev)
     --version       Print the version and exit
 
 Examples:
     universal-pause --run
-    universla-pause --run --volume 0.5
+    universal-pause --run --volume 0.5
     universal-pause --run --silent
+    universal-pause --evdev-test
     universal-pause --help

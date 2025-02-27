@@ -20,6 +20,7 @@ for ((i = 1; i <= $#; i++)); do
         # Set varibales to true to do something later
         -r|--run) readonly ARG_RUN=true;;
         -s|--silent) readonly ARG_SILENT=true;;
+        -t|--evtest) readonly ARG_EVTEST=true;;
 
         # Print a help message and exit
         -h|--help)
