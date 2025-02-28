@@ -59,11 +59,18 @@ if [[ $ARG_SILENT == true ]]; then
     exec > /dev/null 2>&1
 fi
 
+# Check for -t, --evtest arguments. If there is such an argument,
+# start testing event input devices
+if [[ $ARG_EVTEST == true ]]; then
+    evdev-test.sh
+    exit $?
+fi
+
 # Check for -r, --run arguments. If there is such an argument,
 # execute the script and exit
 if [[ $ARG_RUN == true ]]; then
     pause-focused.sh
-    exit 0
+    exit $?
 fi
 
 # If there were no valid arguments, then display a help message and

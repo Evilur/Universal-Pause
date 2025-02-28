@@ -17,7 +17,7 @@ process_id=$(xdotool getactivewindow getwindowpid)
 if [[ -z $process_id ]]; then
     echo $EMPTY_VARIABLE
     play_audio error.wav
-    exit 100
+    exit 110
 fi
 
 # Get the process stats and its name
@@ -33,7 +33,7 @@ if [[ $process_stats == *"T"* ]]; then
     else
         printf "$CONTINUE_FAILURE\n" $process_name $process_id
         play_audio error.wav
-        exit 101
+        exit 111
     fi
 else
     # If the process is running, send the stop SIGNAL
@@ -43,7 +43,7 @@ else
     else
         printf "$STOP_FAILURE\n" $process_name $process_id
         play_audio error.wav
-        exit 102
+        exit 112
     fi
 fi
 
