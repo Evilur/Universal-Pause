@@ -95,8 +95,8 @@ int main(const int arg_c, const char* const arg_v[])
         struct input_event event;
         if (read(device, &event, sizeof(event)) == -1) break;
 
-        /* Goto the next iteration if there is a garbage event */
-        if (event.code == 0) continue;
+        /* Goto the next iteration if there is an EV_SYN event */
+        if (event.type == EV_SYN) continue;
 
         /* Update the current state */
         update_state((struct key_state){ event.code, event.value });

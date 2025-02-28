@@ -1,7 +1,10 @@
 #ifndef EVDEV_H
 #define EVDEV_H
 
+/* Define null macro */
 #define NULL 0
+
+/* Define boolean */
 #define bool _Bool
 #define true 1
 #define false 0
@@ -16,6 +19,12 @@ struct input_event {
 	unsigned short code;        /* Event code */
 	signed int value;           /* Event value */
 };
+
+/* Define event types */
+#define EV_SYN 0x00
+#define EV_KEY 0x01
+#define EV_REL 0x02
+#define EV_ABS 0x03
 
 /* Describes the most important part of the input_event */
 struct key_state {
