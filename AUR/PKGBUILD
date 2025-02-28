@@ -33,5 +33,5 @@ package() {
     mkdir --parent $target_bin
 
     # Install the program to the target directories
-    make TARGET=$target TARGET_BIN=$target_bin clean install
+    make TARGET=$target TARGET_BIN=$target_bin install
 }
