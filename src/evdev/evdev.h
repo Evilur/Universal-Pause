@@ -9,6 +9,12 @@
 #define true 1
 #define false 0
 
+/* Define event types */
+#define EV_SYN 0x00
+#define EV_KEY 0x01
+#define EV_REL 0x02
+#define EV_ABS 0x03
+
 /* Describes the event that we receive from the device */
 struct input_event {
     struct {
@@ -20,17 +26,22 @@ struct input_event {
 	signed int value;           /* Event value */
 };
 
-/* Define event types */
-#define EV_SYN 0x00
-#define EV_KEY 0x01
-#define EV_REL 0x02
-#define EV_ABS 0x03
-
 /* Describes the most important part of the input_event */
 struct key_state {
     unsigned short code;        /* Event code */
     signed int value;           /* Event value */
 };
+
+/* Initialize the hotkey combination
+ * @param arg_c Number of arguments passed to the function
+ * @param arg_v Condition pairs. Format: event_code + event_value
+ */
+void hotkey_init(const unsigned short arg_c, const char* const arg_v[]);
+
+/* Triggering every time the status of any key on the device is updated
+ * @param state The latest updated device key
+ */
+void update_state(const struct key_state state);
 
 /* The command that needs to be executed when
  * all the necessary keys are pressed */
@@ -45,6 +56,6 @@ struct key_state* current_states = NULL;
 struct key_state* hotkey_states = NULL;
 
 /* Contains a size of the arrays: hotkey_states, hotkey_states */
-short hotkey_size = 0;
+unsigned short hotkey_size = 0;
 
 #endif

@@ -3,7 +3,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int main(const int arg_c, const char* const arg_v[])
+int main(const int arg_c __attribute__((unused)), const char* const arg_v[])
 {
     /* Open the device for reading */
     const char* const device_path = arg_v[1];
