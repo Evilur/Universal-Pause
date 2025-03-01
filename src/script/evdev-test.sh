@@ -73,7 +73,7 @@ if [[ $available_devices > 0 ]]; then
        [[ $device_event_number -lt $event_devices ]]; then
            # Read the event device
            read_device /dev/input/event$device_event_number
-    else # If user has entered the incorrect number
+    else # If the user has entered the incorrect number
         echo $INCORRECT_INPUT
         exit 121
     fi

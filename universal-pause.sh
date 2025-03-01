@@ -43,6 +43,13 @@ for ((i = 1; i <= $#; i++)); do
             export VOLUME
             ;;
 
+        # Find the event device
+        -f|--evfind)
+            evdev-find.sh
+            exit $?
+            ;;
+
+
         # Start the event device test and exit
         -t|--evtest)
             # Get the next argument

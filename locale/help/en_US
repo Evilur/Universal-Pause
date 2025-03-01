@@ -9,6 +9,7 @@ Options:
     -h, --help      Print this message and exit
     -s, --silent    Disable terminal output
     -v, --volume    Set the volume (0.1 by default)
+    -f, --evfind    Find the input device
     -t, --evtest    Test the input device events (evdev)
     --version       Print the version and exit
 
@@ -17,4 +18,5 @@ Examples:
     universal-pause --run --volume 0.5
     universal-pause --run --silent
     universal-pause --evdev-test
+    universal-pause --evdev-test /dev/input/event24
     universal-pause --help
