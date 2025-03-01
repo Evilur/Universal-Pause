@@ -20,7 +20,6 @@ for ((i = 1; i <= $#; i++)); do
         # Set varibales to true to do something later
         -r|--run) readonly ARG_RUN=true;;
         -s|--silent) readonly ARG_SILENT=true;;
-        -t|--evtest) readonly ARG_EVTEST=true;;
 
         # Print a help message and exit
         -h|--help)
@@ -43,6 +42,22 @@ for ((i = 1; i <= $#; i++)); do
             readonly VOLUME=${!i}
             export VOLUME
             ;;
+
+        # Start the event device test and exit
+        -t|--evtest)
+            # Get the next argument
+            let i+=1
+
+            # Check for the next argument
+            # If the file exists, set this as argument
+            if [[ -e ${!i} ]]; then
+                evdev-test.sh ${!i}
+                exit $?
+            else
+                evdev-test.sh;
+                exit $?
+            fi
+            ;;
     esac
 done
 
@@ -57,13 +72,6 @@ fi
 # redirect all the output to the /dev/null
 if [[ $ARG_SILENT == true ]]; then
     exec > /dev/null 2>&1
-fi
-
-# Check for -t, --evtest arguments. If there is such an argument,
-# start testing event input devices
-if [[ $ARG_EVTEST == true ]]; then
-    evdev-test.sh
-    exit $?
 fi
 
 # Check for -r, --run arguments. If there is such an argument,

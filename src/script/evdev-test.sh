@@ -3,6 +3,15 @@
 # Include locale files
 source locale/evdev-test/$LOCALE
 
+# If we have an argument
+if [[ $# > 0 ]]; then
+    # Try reading the event data
+    evdev-test $1
+
+    # Exit with the success code
+    exit 0
+fi
+
 # Define a counter for available devices
 available_devices=0
 
