@@ -43,7 +43,7 @@ if [[ -d /sys/class/input ]]; then
 
         # Get the device path
         device_path=$(tail -n 1 $input/event*/uevent)
-        device_path=/dev/${device_path:8}
+        device_path=/dev/input/$(basename $input/event*)
 
         # Increase the number of event devices
         let event_devices+=1
