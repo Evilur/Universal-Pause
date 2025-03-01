@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # Include locale files
-source locale/evdev-test/$LOCALE
+source $ROOT_DIR/locale/evdev-test/$LOCALE
 
 # If we have an argument
 if [[ $# > 0 ]]; then
