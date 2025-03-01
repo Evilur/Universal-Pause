@@ -80,5 +80,13 @@ if [[ $available_devices > 0 ]]; then
 else
     # If there are no available devices
     echo -e $NO_DEVICES
+
+    # If the user is not a superuser
+    if [[ $UID != 0 ]]; then
+        # Hint that you can run the program as superuser
+        echo $TRY_AS_ROOT
+    fi
+
+    # Exit with the error code
     exit 120
 fi
