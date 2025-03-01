@@ -11,7 +11,7 @@ read_device() {
         # Exit with the success code
         exit 0
     else  # If we cant read the device
-        echo "WE CAN'T READ THE DEVICE !!! (USE LOCALE THERE)"
+        echo $CANT_READ: $1
         exit 122
     fi
 }
