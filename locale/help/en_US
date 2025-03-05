@@ -5,18 +5,14 @@ Universal pause for Linux games. Allows you to pause non-pausable cutscenes
 and games. You can bind the command to a key and use it at the right moment
 
 Options:
-    -r, --run       Pause/unpause the active X-server window
     -h, --help      Print this message and exit
+    -r, --run       Pause/unpause the active X-server window.
+                    WARNING! Can freeze the terminal emulator process
     -s, --silent    Disable terminal output
     -v, --volume    Set the volume (0.1 by default)
     -f, --evfind    Find the input device
-    -t, --evtest    Test the input device events (evdev)
+    -t, --evtest    Test the input device events (evdev).
+                    Specify a path to test a specific device
     --version       Print the version and exit
 
 Examples:
-    universal-pause --run
-    universal-pause --run --volume 0.5
-    universal-pause --run --silent
-    universal-pause --evdev-test
-    universal-pause --evdev-test /dev/input/event24
-    universal-pause --help
