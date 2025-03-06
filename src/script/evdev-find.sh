@@ -35,7 +35,7 @@ handle_device() {
         fi
     done
 
-    # Print and empty line
+    # Print an empty line
     echo
 }
 

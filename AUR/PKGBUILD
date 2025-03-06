@@ -10,7 +10,7 @@ pkgdesc="Universal pause for Linux games. Allows you to pause non-pausable cutsc
 
 # Dependencies
 depends=('xdotool' 'util-linux' 'procps-ng' 'grep' 'coreutils')
-makedepends=('make')
+makedepends=('make' 'gcc' 'sed')
 optdepends=('sox: for playing sounds')
 
 # Source
@@ -24,14 +24,16 @@ package() {
     # Go to the source dir
     cd $srcdir
 
-    # Init target directories
-    target=$pkgdir/usr/share/UniversalPause
-    target_bin=$pkgdir/usr/bin
+    # Init prefixes
+    prefix=$pkgdir/usr
+    bin_prefix=$pkgdir/usr/bin
+    share_prefix=$pkgdir/usr/share
 
-    # Create target directories
-    mkdir --parent $target
-    mkdir --parent $target_bin
+    # Create prefix directories
+    mkdir --parent $prefix
+    mkdir --parent $bin_prefix
+    mkdir --parent $share_prefix
 
     # Install the program to the target directories
-    make TARGET=$target TARGET_BIN=$target_bin install
+    make PREFIX=$prefix BINPREFIX=$bin_prefix SHAREPREFIX=$share_prefix install
 }

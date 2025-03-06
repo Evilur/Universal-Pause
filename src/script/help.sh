@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # Print the help message
-cat $ROOT_DIR/locale/help/$LOCALE
+cat $SHAREDIR/locale/help/$LOCALE
 
 # Print examples
 echo '    universal-pause --help

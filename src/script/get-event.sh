@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # Get the directory with the list of the event codes
-readonly event_codes_dir=$ROOT_DIR/bin
+readonly event_codes_dir=$SHAREDIR/bin
 
 # Get the event type/code name by id
 # $1: a file to read from

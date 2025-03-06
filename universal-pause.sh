@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
 # Root directory of the installed program
-readonly ROOT_DIR=/usr/share/UniversalPause
-export ROOT_DIR
+readonly SHAREDIR=#/usr/local/share/UniversalPause
+export SHAREDIR
 
 # Add a script directory to the PATH variable
-PATH=$ROOT_DIR/bin:$PATH
+PATH=$SHAREDIR/bin:$PATH
 
 # Get the locale filename
 case $LANG in

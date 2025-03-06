@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 
-source $ROOT_DIR/locale/pause-focused/$LOCALE
+source $SHAREDIR/locale/pause-focused/$LOCALE
 
 # Play sound from the assets directory
 # $1: the file name in the assets directory
 play_audio() {
     # -q: quiet mod
     # -v: volume <FACTOR>
-    play -qv $VOLUME $ROOT_DIR/sound/$1
+    play -qv $VOLUME $SHAREDIR/sound/$1
 }
 
 # Get the currently active window and get the process ID

@@ -23,7 +23,7 @@ read_device() {
 }
 
 # Include locale files
-source $ROOT_DIR/locale/evdev-test/$LOCALE
+source $SHAREDIR/locale/evdev-test/$LOCALE
 
 # If we have an argument
 if [[ $# > 0 ]]; then
