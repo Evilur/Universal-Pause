@@ -24,7 +24,19 @@ handle_device() {
     local device_name=/sys/class/input/$(basename $1)/device/name
 
     # Print that we found one device
-    echo -e "Found the device: $1 ($(cat $device_name))"
+    echo "Found the device: $1 ($(cat $device_name))"
+
+    # Try to find the alternative device path
+    for device in /dev/input/by-id/*; do
+        # If the link points to our device
+        if [[ $1 == $(readlink -f $device) ]]; then
+            # Print that we found an alternative path
+            echo "Alternative device path: $device"
+        fi
+    done
+
+    # Print and empty line
+    echo
 }
 
 # Define a counter for all event devices
