@@ -5,8 +5,14 @@
 read_device() {
     # If we can read this device
     if [[ -r $1 ]]; then
+        # Print that we start listening
+        echo "Start listening to device input data..."
+
         # Run the event device test for printing the event data
-        evdev-test $1
+        evdev-test "$1" | while IFS= read -r output; do
+            export $output
+            get-event.sh --print $event_type $event_code $event_value
+        done
 
         # Exit with the success code
         exit 0
@@ -42,7 +48,6 @@ if [[ -d /sys/class/input ]]; then
         device_name=$(cat $input/name)
 
         # Get the device path
-        device_path=$(tail -n 1 $input/event*/uevent)
         device_path=/dev/input/$(basename $input/event*)
 
         # Increase the number of event devices

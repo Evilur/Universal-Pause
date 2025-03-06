@@ -27,6 +27,7 @@ install: build
 	mkdir $(TARGET)/bin
 	cp bin/* $(TARGET)/bin
 	cp src/script/* $(TARGET)/bin
+	cp src/event-codes/* $(TARGET)/bin
 	cp --recursive locale $(TARGET)/locale
 	cp --recursive sound $(TARGET)/sound
 

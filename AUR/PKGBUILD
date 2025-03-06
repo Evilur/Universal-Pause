@@ -9,7 +9,7 @@ url="https://github.com/Evilur/UniversalPause"
 pkgdesc="Universal pause for Linux games. Allows you to pause non-pausable cutscenes and games"
 
 # Dependencies
-depends=('xdotool' 'util-linux' 'procps-ng' 'coreutils')
+depends=('xdotool' 'util-linux' 'procps-ng' 'grep' 'coreutils')
 makedepends=('make')
 optdepends=('sox: for playing sounds')
 

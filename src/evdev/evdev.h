@@ -9,11 +9,8 @@
 #define true 1
 #define false 0
 
-/* Define event types */
+/* Define sync event type code */
 #define EV_SYN 0x00
-#define EV_KEY 0x01
-#define EV_REL 0x02
-#define EV_ABS 0x03
 
 /* Describes the event that we receive from the device */
 struct input_event {
