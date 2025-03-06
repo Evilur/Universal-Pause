@@ -5,8 +5,6 @@ kill_background() {
     # Print that we are interrupting the process
     echo "Interrupting..."
 
-    echo $(jobs | wc -l)
-
     # Kill all background processes
     kill $(jobs -p) 2>/dev/null
 
@@ -24,7 +22,7 @@ handle_device() {
     local device_name=/sys/class/input/$(basename $1)/device/name
 
     # Print that we found one device
-    echo "Found the device: $1 ($(cat $device_name))"
+    echo -e "\nFound the device: $1 ($(cat $device_name))"
 
     # Try to find the alternative device path
     for device in /dev/input/by-id/*; do
@@ -34,9 +32,6 @@ handle_device() {
             echo "Alternative device path: $device"
         fi
     done
-
-    # Print an empty line
-    echo
 }
 
 # Define a counter for all event devices
@@ -89,7 +84,7 @@ echo "Wait 1 second..."
 sleep 1
 
 # Rewrite the previous output and print that we are listening to devices
-echo -e "Listening to devices... (Ctrl+C for interrupt)\n"
+echo "Listening to devices... (Ctrl+C for interrupt)"
 
 # Trap the SIGINT and SIGTERM
 trap kill_background SIGINT SIGTERM
