@@ -48,5 +48,6 @@ int main(const int arg_c __attribute__((unused)), const char* const arg_v[])
 
     /* This code is executed only when
      * there is an error in reading the device */
+    printf("It looks like the input device has been disabled");
     return 100;
 }
