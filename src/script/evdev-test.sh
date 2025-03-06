@@ -5,14 +5,17 @@
 read_device() {
     # If we can read this device
     if [[ -r $1 ]]; then
+        # Export event type/code names
+        set -a
+        source $SHAREDIR/bin/REVERSE_TYPES.sh
+        source $SHAREDIR/bin/REVERSE_CODES.sh
+        set +a
+
         # Print that we start listening
         echo "Start listening to device input data..."
 
         # Run the event device test for printing the event data
-        evdev-test "$1" | while IFS= read -r output; do
-            export $output
-            get-event.sh --print $event_type $event_code $event_value
-        done
+        evdev-test $1
 
         # Exit with the success code
         exit 0
