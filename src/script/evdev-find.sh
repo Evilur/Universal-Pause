@@ -1,9 +1,12 @@
 #!/usr/bin/env sh
 
+# Include locale files
+source $SHAREDIR/locale/evdev-find/$LOCALE
+
 # Kill all background processes
 kill_background() {
     # Print that we are interrupting the process
-    echo "Interrupting..."
+    echo $INTERRUPTING
 
     # Kill all background processes
     kill $(jobs -p) 2>/dev/null
@@ -22,14 +25,14 @@ handle_device() {
     local device_name=/sys/class/input/$(basename $1)/device/name
 
     # Print that we found one device
-    echo -e "\nFound the device: $1 ($(cat $device_name))"
+    echo -e "\n$FOUND_DEVICE $1 ($(cat $device_name))"
 
     # Try to find the alternative device path
     for device in /dev/input/by-id/*; do
         # If the link points to our device
         if [[ $1 == $(readlink -f $device) ]]; then
             # Print that we found an alternative path
-            echo "Alternative device path: $device"
+            echo "$ALT_DEVICE_PATH $device"
         fi
     done
 }
@@ -55,12 +58,12 @@ done
 # If we have NOT any available devices
 if [[ ${#available_devices[@]} == 0 ]]; then
     # Print the message
-    echo "No available devices were found"
+    echo $NO_DEVICES
 
     # If the user is not a superuser
     if [[ $UID != 0 ]]; then
         # Hint that you can run the program as superuser
-        echo "Try running the command as superuser"
+        echo $RUN_AS_ROOT
     fi
 
     # Exit the program with error code
@@ -70,21 +73,21 @@ fi
 # If not all devices are available
 if [[ ${#available_devices[@]} != $event_devices ]]; then
     # Print how many devices are currently available
-    echo "Devices are available: ${#available_devices[@]}/$event_devices"
+    echo "$AVAILABLE_DEVICE_COUNT ${#available_devices[@]}/$event_devices"
 
     # If the user is not a superuser
     if [[ $UID != 0 ]]; then
         # Hint that you can run the program as superuser
-        echo "Try running the command as superuser to get more"
+        echo $GET_MORE_DEVICES
     fi
 fi
 
 # Wait 1 second to avoid catching the release of the enter key
-echo "Wait 1 second..."
+echo $WAIT_A_SEC
 sleep 1
 
 # Rewrite the previous output and print that we are listening to devices
-echo "Listening to devices... (Ctrl+C for interrupt)"
+echo $LISTENING_DEVICES
 
 # Trap the SIGINT and SIGTERM
 trap kill_background SIGINT SIGTERM
