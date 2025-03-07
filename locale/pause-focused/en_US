@@ -1,5 +1,5 @@
-readonly EMPTY_VARIABLE='Cannot get the process ID'
-readonly CONTINUE_SUCCESS='Process "%s" (%s) has been continued'
-readonly CONTINUE_FAILURE='Can'\''t continue the process "%s" (%s)'
-readonly STOP_SUCCESS='Process "%s" (%s) has been stopped'
-readonly STOP_FAILURE='Can'\''t stop the process "%s" (%s)'
+readonly EMPTY_VARIABLE="Cannot get the process ID"
+readonly CONTINUE_SUCCESS="Process \"%s\" (%s) has been continued"
+readonly CONTINUE_FAILURE="Can't continue the process \"%s\" (%s)"
+readonly STOP_SUCCESS="Process \"%s\" (%s) has been stopped"
+readonly STOP_FAILURE="Can't stop the process \"%s\" (%s)"
