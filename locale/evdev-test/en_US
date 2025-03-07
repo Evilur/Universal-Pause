@@ -1,3 +1,4 @@
+readonly LISTENING_DEVICE="Start listening to device input data..."
 readonly SELECT_DEVICE="Select the device event number"
 readonly INCORRECT_INPUT="Error: Incorrect input"
 readonly NO_DEVICES="Seems like you don't have enough permissions to read the input devices"

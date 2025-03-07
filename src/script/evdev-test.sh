@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+# Include locale files
+source $SHAREDIR/locale/evdev-test/$LOCALE
+
 # Read the event device using the event-test C binary
 # $1: the event device path
 read_device() {
@@ -12,7 +15,7 @@ read_device() {
         set +a
 
         # Print that we start listening
-        echo "Start listening to device input data..."
+        echo $LISTENING_DEVICE
 
         # Run the event device test for printing the event data
         evdev-test $1
@@ -24,9 +27,6 @@ read_device() {
         exit 122
     fi
 }
-
-# Include locale files
-source $SHAREDIR/locale/evdev-test/$LOCALE
 
 # If we have an argument
 if [[ $# > 0 ]]; then

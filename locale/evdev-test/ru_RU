@@ -1,3 +1,4 @@
+readonly LISTENING_DEVICE="Прослушивание входных данных с устройства..."
 readonly SELECT_DEVICE="Выберите номер устройства ввода"
 readonly INCORRECT_INPUT="Ошибка: Неправильный ввод"
 readonly NO_DEVICES="Похоже, у вас недостаточно прав для считывания устройств ввода"
