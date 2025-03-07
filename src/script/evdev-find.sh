@@ -89,8 +89,10 @@ sleep 1
 # Rewrite the previous output and print that we are listening to devices
 echo $LISTENING_DEVICES
 
-# Trap the SIGINT and SIGTERM
-trap kill_background SIGINT SIGTERM
+# Trap terminate events
+trap kill_background SIGINT
+trap kill_background SIGTERM
+trap kill_background SIGHUP
 
 # Start listening all the available devices
 for device in ${available_devices[@]}; do
