@@ -28,17 +28,18 @@ get_comparison() {
         '>=') local comp_type='-ge';;
     esac
 
+    # Print the comparison
     echo "$comp_type $2"
 }
 
-# Assemble one of the events necessary for the hotkey
+# Assemble one of the condition necessary for the hotkey
 # $1: argument from the shell
-# return: arguments for the evdev program (C binary)
+# return: condition arguments for the evdev program (C binary)
 #    event type (integer)
 #    event code (integer)
 #    the comparison type: eq, ne, lt, gt, le, ge (according to the bash docs)
 #    the comparison value
-get_hotkey_event() {
+get_hotkey_condition() {
     # Set the default comparison (greater or equal 1)
     local comparison='-ge 1'
 
@@ -53,9 +54,6 @@ get_hotkey_event() {
       awk -F '[:\\\\/|]' '{sub("(-|=|==|!=|<|>|<=|>=)", " & "); print $1, $2}'\
       <<< $1))
     readonly condition_arr
-
-    echo ${condition_arr[@]}
-    return
 
     # Get the necessary information from an unsorted array
     case ${#condition_arr[@]} in
@@ -92,5 +90,5 @@ get_hotkey_event() {
 
 # Get all arguments
 for ((i = 1; i <= $#; i++)); do
-    get_hotkey_event ${!i}
+    get_hotkey_condition ${!i}
 done
