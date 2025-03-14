@@ -6,9 +6,13 @@
 # $2: event code
 # return:
 #    event type (integer)
-#    event code(integer)
+#    event code (integer)
 get_event() {
-    # Temp code
+    # If we have only a key code
+    #if [[ -z $2 ]]; then
+        #echo $1 $2
+    #fi
+
     echo $1 $2
 }
 
@@ -19,6 +23,13 @@ get_event() {
 #    the comparison type: eq, ne, lt, gt, le, ge (according to the bash docs)
 #    the comparison value
 get_comparison() {
+    # Check the comparison value for number
+    if ! [[ "$2" =~ ^-?[1-9][0-9]*$ ]]; then
+        echo "Invalid input"
+        echo "\"$2\" is Not a Number"
+        exit 141
+    fi
+
     case "$1" in
         '='|'==') local comp_type='-eq';;
         '!=') local comp_type='-ne';;
@@ -27,6 +38,13 @@ get_comparison() {
         '<=') local comp_type='-le';;
         '>=') local comp_type='-ge';;
     esac
+
+    # Check the comparison type
+    if [[ -z $comp_type ]]; then
+        echo "Invalid input"
+        echo "\"$1\" is not an available operator"
+        exit 142
+    fi
 
     # Print the comparison
     echo "$comp_type $2"
@@ -51,8 +69,8 @@ get_hotkey_condition() {
     # EV_CODE can be a number or a string
     # Possible comparisons: =, !=, <, >, <=, >=
     local condition_arr=($(\
-      awk -F '[:\\\\/|]' '{sub("(-|=|==|!=|<|>|<=|>=)", " & "); print $1, $2}'\
-      <<< $1))
+      awk -F '[:\\\\/|]' '{sub("(=|==|!=|<|>|<=|>=)", " & "); print $1, $2}' \
+      <<< "$1"))
     readonly condition_arr
 
     # Get the necessary information from an unsorted array
@@ -78,6 +96,12 @@ get_hotkey_condition() {
         1)
             local event=$(get_event ${condition_arr[0]})
             ;;
+
+        # If we have unexpected input
+        *)
+            echo "Ivalid input: \"$1\""
+            exit 140
+            ;;
     esac
 
     # Mark event and comparison varibales as readonly
@@ -90,5 +114,8 @@ get_hotkey_condition() {
 
 # Get all arguments
 for ((i = 1; i <= $#; i++)); do
-    get_hotkey_condition ${!i}
+    get_hotkey_condition "${!i}"
 done
+
+# Exit with the successs code
+exit 0
