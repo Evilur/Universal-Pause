@@ -14,6 +14,8 @@ source "/home/flame/Programs/UniversalPause/src/event-codes/EV_LED.sh"
 source "/home/flame/Programs/UniversalPause/src/event-codes/EV_SND.sh"
 source "/home/flame/Programs/UniversalPause/src/event-codes/EV_REP.sh"
 
+readonly INVALID_INPUT_ERROR='[!] Invalid input'
+
 # Get the event from the input data
 # It can find an event if we have its type, and if we don't
 # $1: event type or event code (if we haven't event type)
@@ -34,28 +36,31 @@ get_event() {
 
         # Get the event type
         case "$code_name" in
-            SYN_*      ) local event_type=$EV_SYN;;
-            KEY_*|BTN_*) local event_type=$EV_KEY;;
-            REL_*      ) local event_type=$EV_REL;;
-            ABS_*      ) local event_type=$EV_ABS;;
-            MSC_*      ) local event_type=$EV_MSC;;
-            SW_*       ) local event_type=$EV_SW;;
-            LED_*      ) local event_type=$EV_LED;;
-            SND_*      ) local event_type=$EV_SND;;
-            REP_*      ) local event_type=$EV_REP;;
+            SYN_*      ) local -r event_type=$EV_SYN;;
+            KEY_*|BTN_*) local -r event_type=$EV_KEY;;
+            REL_*      ) local -r event_type=$EV_REL;;
+            ABS_*      ) local -r event_type=$EV_ABS;;
+            MSC_*      ) local -r event_type=$EV_MSC;;
+            SW_*       ) local -r event_type=$EV_SW;;
+            LED_*      ) local -r event_type=$EV_LED;;
+            SND_*      ) local -r event_type=$EV_SND;;
+            REP_*      ) local -r event_type=$EV_REP;;
             *)
-                echo "\"$code_name\": no such an event code" >&2
-                exit 140
+                # Print the error message
+                echo "$INVALID_INPUT_ERROR:"\
+                    "\"$code_name\" - no such an event code" >&2
+                # Exit from the function
+                return
                 ;;
         esac
 
-        # Make the event type variable readonly
-        readonly event_type
-
         # Check the code for existence
         if [[ -z ${!code_name} ]]; then
-            echo "\"$code_name\": no such an event code" >&2
-            exit 140
+            # Print the error message
+            echo "$INVALID_INPUT_ERROR:"\
+                "\"$code_name\" - no such an event code" >&2
+            # Exit from the function
+            return
         fi
 
         # Print the result
@@ -75,9 +80,11 @@ get_event() {
 
         # Check for the ivalid input
         if [[ ! "$code_name" =~ $evdev_code_regex ]]; then
-            echo "Ivalid input" >&2
-            echo "\"$code_name\" must be the string code name of the event" >&2
-            exit 143
+            # Print the error message
+            echo "$INVALID_INPUT_ERROR:"\
+                "\"$code_name\" must be the string code name of the event" >&2
+            # Exit from the function
+            return
         fi
 
         # If the input is correct
@@ -88,53 +95,54 @@ get_event() {
         local type_name=$1
         readonly type_name
 
+        # Get the event type (integer)
+        local event_type=${!type_name}
+        readonly event_type
+
+        # If there is no such an event type
+        if [[ -z "$event_type" ]]; then
+            # Print the error message
+            echo "$INVALID_INPUT_ERROR:"\
+                "\"$type_name\" - no such an event type" >&2
+            # Exit from the function
+            return
+        fi
+
         # Set the event code. It can be a code name or a code (integer)
         local event_code=$2
         readonly event_code
 
-        # If the event_code probably is an event name
+        # If the $event_code is a string event name
         if [[ "$event_code" =~ $evdev_code_regex ]]; then
-            # Get the event type (integer)
-            local event_type=${!type_name}
-            readonly event_type
-
-            # If there is no such an event type
-            if [[ -z "$event_type" ]]; then
-                echo "\"$type_name\": no such an event type" >&2
-                exit 140
-            fi
-
             # Get the event arguments
-            local event_arguments=$(get_arguments_by_code_name $event_code)
+            local event_arguments=$(get_arguments_by_code_name \
+                $event_code 2>/dev/null)
             readonly event_arguments
 
             # If no such code exists for this type of event
-            if [[ "$(cut -d ' ' -f 1 <<< $event_arguments)" !=\
-                "$event_type" ]]; then
-                    echo "Invalid input" >&2
-                    exit 140
+            if [[ "$(cut -d ' ' -f 1 <<< $event_arguments)" != "$event_type" ]]\
+               || [[ -z "$event_arguments" ]]; then
+                    # Print the error message
+                    echo "$INVALID_INPUT_ERROR:"\
+                        "\"$event_code\" - no such an event code"\
+                        "for the event type \"$type_name\"" >&2
+                    # Exit from the function
+                    return
             fi
 
             # If all is OK
             echo "$event_arguments"
-        # If the event_code is an integer
+        # If the $event_code is an integer
         elif [[ "$event_code" =~ ^[0-9]+$ ]]; then
-            # Get the event type (integer)
-            local event_type=${!type_name}
-            readonly event_type
-
-            # If there is no such an event type
-            if [[ -z "$event_type" ]]; then
-                echo "\"$type_name\": no such an event type" >&2
-                exit 140
-            fi
-
             # Print the event type and code
             echo "$event_type $event_code"
-        # If there is an invalid input
+        # If there is an invalid input for the $event_code
         else
-            echo "Invalid input. Event code must be an integer" >&2
-            exit 140
+            # Print the error message
+            echo "$INVALID_INPUT_ERROR:"\
+                "\"$event_code\" should be the numeric event code" >&2
+            # Exit from the function
+            return
         fi
     fi
 }
@@ -146,35 +154,42 @@ get_event() {
 #    the comparison type: eq, ne, lt, gt, le, ge (according to the bash docs)
 #    the comparison value
 get_comparison() {
-    # Check the comparison value for number
-    if ! [[ "$2" =~ ^-?[0-9]*$ ]]; then
-        echo "Invalid input" >&2
-        echo "\"$2\" is Not a Number" >&2
-        exit 141
+    # Get arguments
+    local comp_sign=$1
+    readonly comp_sign
+    local comp_value=$2
+    readonly comp_value
+
+    # Check the comparison value for NaN
+    if ! [[ "$comp_value" =~ ^-?[0-9]*$ ]]; then
+        # Print the error message
+        echo "$INVALID_INPUT_ERROR:"\
+            "\"$comp_value\" - Not a Number" >&2
+        # Exit from the function
+        return
     fi
 
     # Get the current comparison type
-    case "$1" in
-        '='|'==') local comp_type='-eq';;
-        '!='    ) local comp_type='-ne';;
-        '<'     ) local comp_type='-lt';;
-        '>'     ) local comp_type='-gt';;
-        '<='    ) local comp_type='-le';;
-        '>='    ) local comp_type='-ge';;
+    case "$comp_sign" in
+        '='|'==') local -r comp_type='-eq';;
+        '!='    ) local -r comp_type='-ne';;
+        '<'     ) local -r comp_type='-lt';;
+        '>'     ) local -r comp_type='-gt';;
+        '<='    ) local -r comp_type='-le';;
+        '>='    ) local -r comp_type='-ge';;
     esac
 
-    # Make the comparison type variable readonly
-    readonly comp_type
-
-    # Check the comparison type
+    # Check the comparison type for emptiness
     if [[ -z "$comp_type" ]]; then
-        echo "Invalid input" >&2
-        echo "\"$1\" is not an available operator" >&2
-        exit 142
+        # Print the error message
+        echo "$INVALID_INPUT_ERROR:"\
+            "\"$comp_sign\" is not an available operator" >&2
+        # Exit from the function
+        return
     fi
 
     # Print the comparison
-    echo "$comp_type $2"
+    echo "$comp_type $comp_value"
 }
 
 # Assemble one of the condition necessary for the hotkey
@@ -208,40 +223,49 @@ get_hotkey_condition() {
     case ${#condition_arr[@]} in
         # Possible variant: EV_TYPE:EV_CODE(comparison)number
         4)
-            local event=$(get_event "${condition_arr[0]}" "${condition_arr[1]}")
+            local -r event=$(get_event \
+                "${condition_arr[0]}" "${condition_arr[1]}")
             comparison=$(get_comparison \
                 "${condition_arr[2]}" "${condition_arr[3]}")
             ;;
 
         # Possible variant: EV_CODE(comparison)number
         3)
-            local event=$(get_event "${condition_arr[0]}")
+            local -r event=$(get_event "${condition_arr[0]}")
             comparison=$(get_comparison \
                 "${condition_arr[1]}" "${condition_arr[2]}")
             ;;
 
         # Possible variant: EV_TYPE:EV_CODE
         2)
-            local event=$(get_event "${condition_arr[0]}" "${condition_arr[1]}")
+            local -r event=$(get_event \
+                "${condition_arr[0]}" "${condition_arr[1]}")
             ;;
 
         # Possible variant: EV_CODE
         1)
-            local event=$(get_event "${condition_arr[0]}")
+            local -r event=$(get_event "${condition_arr[0]}")
             ;;
 
-        # If we have unexpected input
+        # If we have an unexpected input
         *)
-            echo "Ivalid input: \"$argument\"" >&2
-            exit 140
+            # Print the error message
+            echo "$INVALID_INPUT_ERROR:"\
+                "can't recognize the argument - \"$argument\"" >&2
             ;;
     esac
-
-    # Mark event and comparison varibales as readonly
-    readonly event
     readonly comparison
 
-    # Print the assembled arguments
+    # If it was not possible to get any of the arguments,
+    # it means that at some stage we had an error
+    if [[ -z "$event" ]] || [[ -z "$comparison" ]]; then
+        # Print the error message
+        echo "[!] The argument \"$argument\" was ignored due to an error"
+        # Exit from the function
+        return
+    fi
+
+    # If all is OK, print the assembled arguments
     echo "$event $comparison"
 }
 
