@@ -28,44 +28,72 @@ int main(const int arg_c, const char* const arg_v[])
         if (event.type == EV_SYN) continue;
 
         /* Update the current state */
-        update_state((struct key_state){ event.code, event.value });
+        update_state((struct key_state){
+            event.type,
+            event.code,
+            event.value
+        });
     }
 
     /* This code is executed only when
      * there is an error in reading the device */
-    printf("It looks like the input device has been disabled");
+    printf("Looks like the input device has been disabled");
     return 100;
 }
 
 void hotkey_init(const unsigned short arg_c, const char* const arg_v[]) {
     /* Allocate the memory for the hotkey combination
      * and for current key states */
-    hotkey_size = arg_c / 2;
-    hotkey_states = malloc(hotkey_size * sizeof(struct key_state));
+    hotkey_size = arg_c / 4;
     current_states = malloc(hotkey_size * sizeof(struct key_state));
+    hotkey_states = malloc(hotkey_size * sizeof(struct key_state));
+    hotkey_comparison = malloc(hotkey_size * sizeof(comparison_func));
 
     /* Get the keys from the arguments
      * for using them as a hotkey in future
      * (if all pressed) */
-    printf("The hotkey contains the following:\n");
-    for (int i = 0, hotkey_i = 0; i < arg_c; i += 2) {
+    for (int i = 0, hotkey_i = 0; i < arg_c; i += 4) {
         /* Init the key state for the hotkey
          * and put it to the array */
         hotkey_states[hotkey_i] = (struct key_state){
             (unsigned short)atoi(arg_v[i]),
-            atoi(arg_v[i + 1])
+            (unsigned short)atoi(arg_v[i + 1]),
+            atoi(arg_v[i + 3])
         };
-        current_states[hotkey_i].code = hotkey_states[hotkey_i].code;
 
-        /* Print the result */
-        printf("Code=%d Value>=%d\n",
+        /* Init the current state and set its value to 0 */
+        current_states[hotkey_i] = (struct key_state){
+            hotkey_states[hotkey_i].type,
             hotkey_states[hotkey_i].code,
-            hotkey_states[hotkey_i].value);
+            0
+        };
+
+        /* Set the comparison function */
+        const char* comp_arg = arg_v[i + 2];
+        if (comp_arg[1] == 'e' && comp_arg[2] == 'q')
+            hotkey_comparison[hotkey_i] = compare_eq;
+        else if (comp_arg[1] == 'n' && comp_arg[2] == 'e')
+            hotkey_comparison[hotkey_i] = compare_ne;
+        else if (comp_arg[1] == 'l' && comp_arg[2] == 't')
+            hotkey_comparison[hotkey_i] = compare_lt;
+        else if (comp_arg[1] == 'g' && comp_arg[2] == 't')
+            hotkey_comparison[hotkey_i] = compare_gt;
+        else if (comp_arg[1] == 'l' && comp_arg[2] == 'e')
+            hotkey_comparison[hotkey_i] = compare_le;
+        else if (comp_arg[1] == 'g' && comp_arg[2] == 'e')
+            hotkey_comparison[hotkey_i] = compare_ge;
 
         /* Increase the hotkey array iterator */
         hotkey_i++;
     }
 }
+
+bool compare_eq(signed int val1, signed int val2) { return val1 == val2; }
+bool compare_ne(signed int val1, signed int val2) { return val1 != val2; }
+bool compare_lt(signed int val1, signed int val2) { return val1 < val2; }
+bool compare_gt(signed int val1, signed int val2) { return val1 > val2; }
+bool compare_le(signed int val1, signed int val2) { return val1 <= val2; }
+bool compare_ge(signed int val1, signed int val2) { return val1 >= val2; }
 
 void update_state(const struct key_state state) {
     /* The number of pressed keys required to activate the hotkey */
@@ -79,21 +107,28 @@ void update_state(const struct key_state state) {
 
     /* Cycle through all the keys needed for the combination */
     for (short i = 0; i < hotkey_size; i++) {
-        /* Check if the key is pressed */
-        if (current_states[i].value >= hotkey_states[i].value
-            && state.code != current_states[i].code) pressed++;
+        /* Get the comparison function */
+        comparison_func compare = hotkey_comparison[i];
 
-        /* Check if the key we just pressed exists in our hotkey combination */
-        if (state.code != current_states[i].code) continue;
+        /* Get the current state */
+        struct key_state* current_state = current_states + i;
 
-        /* Check whether the state of the key is really updated */
-        if (current_states[i].value < hotkey_states[i].value) is_updated = true;
+        /* Get the necessary hotkey state */
+        struct key_state* hotkey_state = hotkey_states + i;
 
-        /* Update the value */
-        current_states[i].value = state.value;
+        /* If we found the last event state in our array */
+        if (state.code == current_state->code &&
+            state.type == current_state->type) {
+            /* Check if the event state didn't just match the condition */
+            if (!compare(current_state->value, hotkey_state->value))
+                is_updated = true;
 
-        /* Now check the value of this key and increase it if necessary */
-        if (state.value >= hotkey_states[i].value) pressed++;
+            /* Update the value */
+            current_state->value = state.value;
+        }
+
+        /* Check each state for triggering the condition */
+        if (compare(current_state->value, hotkey_state->value)) pressed++;
     }
 
     /* If all keys are pressed and this has just happened (is_updated variable),
