@@ -57,7 +57,7 @@ for ((i = 1; i <= $#; i++)); do
             # Check for the next argument
             # If the file exists, set this as argument
             if [[ -e "${!i}" ]]; then
-                evdev-test.sh ${!i}
+                evdev-test.sh "${!i}"
             else
                 evdev-test.sh;
             fi
@@ -99,7 +99,7 @@ fi
 # Check for -e, --evdev arguments. If there is such an argument,
 # run the evdev handling with arguments and exit
 if [[ "$ARG_EVDEV" == true ]]; then
-    evdev.sh ${evdev_arguments[@]}
+    evdev.sh "${evdev_arguments[@]}"
     exit $?
 fi
 
