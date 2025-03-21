@@ -301,7 +301,7 @@ fi
 # If all is OK, run the evdev (C binary) with the assembled argument list
 # evdev arguments order:
 # <event device path> <command to run> <hotkey argument array>
-evdev $device_path 'echo evdev test' ${hotkey_arguments[@]}
+evdev $device_path 'pause-focused.sh' ${hotkey_arguments[@]}
 
 # Exit with the successs code
 exit 0
