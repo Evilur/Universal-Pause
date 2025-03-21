@@ -1,18 +1,10 @@
 #!/usr/bin/env sh
 
-# Source the file with event type names
-source "/home/flame/Programs/UniversalPause/src/event-codes/EVENT_TYPES.sh"
-
-# Source the files where out code names can be
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_SYN.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_KEY.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_REL.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_ABS.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_MSC.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_SW.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_LED.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_SND.sh"
-source "/home/flame/Programs/UniversalPause/src/event-codes/EV_REP.sh"
+# Source the files where our event code names and event type names can be
+for source_file in \
+EVENT_TYPES EV_SYN EV_KEY EV_REL EV_ABS EV_MSC EV_SW EV_LED EV_SND EV_REP; do
+    source "$SHAREDIR/bin/$source_file.sh"
+done
 
 readonly INVALID_INPUT_ERROR='[!] Invalid input'
 
@@ -199,7 +191,7 @@ get_comparison() {
 #    event code (integer)
 #    the comparison type: eq, ne, lt, gt, le, ge (according to the bash docs)
 #    the comparison value
-get_hotkey_condition() {
+get_hotkey_arguments() {
     # Set the argument from the shell
     local argument=$1
     readonly argument
@@ -260,7 +252,7 @@ get_hotkey_condition() {
     # it means that at some stage we had an error
     if [[ -z "$event" ]] || [[ -z "$comparison" ]]; then
         # Print the error message
-        echo "[!] The argument \"$argument\" was ignored due to an error"
+        echo "[!] The argument \"$argument\" was ignored due to an error" >&2
         # Exit from the function
         return
     fi
@@ -269,10 +261,47 @@ get_hotkey_condition() {
     echo "$event $comparison"
 }
 
+# Check the number of arguments (it must be at least 2)
+if [[ "$#" -lt 2 ]]; then
+    echo -e "Error: you must pass the path to the device and"\
+            "the key combination to the command"\
+            "\nSee the examples using \"--helo\" argument" >&2
+    exit 140
+fi
+
 # Get all arguments
 for ((i = 1; i <= $#; i++)); do
-    get_hotkey_condition "${!i}"
+    # Get the current argument
+    argument=${!i}
+
+    # If there is the existing path
+    if [[ -e "$argument" ]]; then
+        # Set the device path for future manupulations
+        device_path=$argument
+        # Goto the next iteration
+        continue
+    fi
+
+    # Get arguments for the evdev (C binary)
+    hotkey_arguments+=($(get_hotkey_arguments "$argument"))
 done
+
+# Check the number of assembled arguments
+if [[ "${#hotkey_arguments[@]}" -eq 0 ]]; then
+    echo "Error: It is impossible to assemble a hotkey" >&2
+    exit 141
+fi
+
+# If the $device_path is empty
+if [[ -z "$device_path" ]]; then
+    echo "Error: the device's path was not passed to the command" >&2
+    exit 142
+fi
+
+# If all is OK, run the evdev (C binary) with the assembled argument list
+# evdev arguments order:
+# <event device path> <command to run> <hotkey argument array>
+evdev $device_path 'echo evdev test' ${hotkey_arguments[@]}
 
 # Exit with the successs code
 exit 0

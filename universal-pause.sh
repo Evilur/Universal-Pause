@@ -49,7 +49,6 @@ for ((i = 1; i <= $#; i++)); do
             exit $?
             ;;
 
-
         # Start the event device test and exit
         -t|--evtest)
             # Get the next argument
@@ -57,33 +56,56 @@ for ((i = 1; i <= $#; i++)); do
 
             # Check for the next argument
             # If the file exists, set this as argument
-            if [[ -e ${!i} ]]; then
+            if [[ -e "${!i}" ]]; then
                 evdev-test.sh ${!i}
-                exit $?
             else
                 evdev-test.sh;
-                exit $?
             fi
+
+            # Exit with the result code
+            exit $?
+            ;;
+
+        # Start listening to the event device and handling the hotkey
+        -e|--evdev)
+            # Get all next arguments as long as there is's not another flag
+            let i+=1
+            while [[ "${!i}" =~ ^[^-].+$ ]]; do
+                # Add the argument to the array
+                evdev_arguments+=("${!i}")
+                let i+=1
+            done
+            readonly evdev_arguments
+
+            # Set the evdev argument to the future handling
+            readonly ARG_EVDEV=true
             ;;
     esac
 done
 
 # Check the VOLUME variable. If it wasn't initialized,
 # Set the fault volume level: 0.1
-if [ -z $VOLUME ]; then
+if [ -z "$VOLUME" ]; then
     readonly VOLUME=0.1
     export VOLUME
 fi
 
 # Check for -s, --silent arguments. If there is such an argument,
 # redirect all the output to the /dev/null
-if [[ $ARG_SILENT == true ]]; then
+if [[ "$ARG_SILENT" == true ]]; then
     exec > /dev/null 2>&1
+fi
+
+# Check for -e, --evdev arguments. If there is such an argument,
+# run the evdev handling with arguments and exit
+if [[ "$ARG_EVDEV" == true ]]; then
+    evdev.sh ${evdev_arguments[@]}
+    exit $?
 fi
 
 # Check for -r, --run arguments. If there is such an argument,
 # execute the script and exit
-if [[ $ARG_RUN == true ]]; then
+if [[ "$ARG_RUN" == true ]]; then
     pause-focused.sh
     exit $?
 fi
