@@ -92,20 +92,20 @@ fi
 
 # Check for -s, --silent arguments. If there is such an argument,
 # redirect all the output to the /dev/null
-if [[ "$ARG_SILENT" == true ]]; then
+if [[ "$ARG_SILENT" -eq "true" ]]; then
     exec > /dev/null 2>&1
 fi
 
 # Check for -e, --evdev arguments. If there is such an argument,
 # run the evdev handling with arguments and exit
-if [[ "$ARG_EVDEV" == true ]]; then
+if [[ "$ARG_EVDEV" -eq "true" ]]; then
     evdev.sh "${evdev_arguments[@]}"
     exit $?
 fi
 
 # Check for -r, --run arguments. If there is such an argument,
 # execute the script and exit
-if [[ "$ARG_RUN" == true ]]; then
+if [[ "$ARG_RUN" -eq "true" ]]; then
     pause-focused.sh
     exit $?
 fi
