@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
 
+# Include locale file
+source $SHAREDIR/locale/evdev/$LOCALE
+
 # Source the files where our event code names and event type names can be
 for source_file in \
 EVENT_TYPES EV_SYN EV_KEY EV_REL EV_ABS EV_MSC EV_SW EV_LED EV_SND EV_REP; do
     source "$SHAREDIR/bin/$source_file.sh"
 done
-
-readonly INVALID_INPUT_ERROR='[!] Invalid input'
 
 # Get the event from the input data
 # It can find an event if we have its type, and if we don't
@@ -38,20 +39,16 @@ get_event() {
             SND_*      ) local -r event_type=$EV_SND;;
             REP_*      ) local -r event_type=$EV_REP;;
             *)
-                # Print the error message
-                echo "$INVALID_INPUT_ERROR:"\
-                    "\"$code_name\" - no such an event code" >&2
-                # Exit from the function
+                # Print the error message and exit
+                printf "$ERROR_NO_SUCH_EVENT_CODE\n" "$code_name" >&2
                 return
                 ;;
         esac
 
         # Check the code for existence
         if [[ -z ${!code_name} ]]; then
-            # Print the error message
-            echo "$INVALID_INPUT_ERROR:"\
-                "\"$code_name\" - no such an event code" >&2
-            # Exit from the function
+            # Print the error message and exit
+            printf "$ERROR_NO_SUCH_EVENT_CODE\n" "$code_name" >&2
             return
         fi
 
@@ -72,10 +69,8 @@ get_event() {
 
         # Check for the ivalid input
         if [[ ! "$code_name" =~ $evdev_code_regex ]]; then
-            # Print the error message
-            echo "$INVALID_INPUT_ERROR:"\
-                "\"$code_name\" must be the string code name of the event" >&2
-            # Exit from the function
+            # Print the error message and exit
+            printf "$ERROR_NO_SUCH_EVENT_CODE\n" "$code_name" >&2
             return
         fi
 
@@ -93,10 +88,8 @@ get_event() {
 
         # If there is no such an event type
         if [[ -z "$event_type" ]]; then
-            # Print the error message
-            echo "$INVALID_INPUT_ERROR:"\
-                "\"$type_name\" - no such an event type" >&2
-            # Exit from the function
+            # Print the error message and exit
+            printf "$ERROR_NO_SUCH_EVENT_TYPE\n" "$type_name" >&2
             return
         fi
 
@@ -114,11 +107,9 @@ get_event() {
             # If no such code exists for this type of event
             if [[ "$(cut -d ' ' -f 1 <<< $event_arguments)" != "$event_type" ]]\
                || [[ -z "$event_arguments" ]]; then
-                    # Print the error message
-                    echo "$INVALID_INPUT_ERROR:"\
-                        "\"$event_code\" - no such an event code"\
-                        "for the event type \"$type_name\"" >&2
-                    # Exit from the function
+                    # Print the error message and exit
+                    printf "$ERROR_NO_SUCH_EVENT_CODE_FOR_TYPE\n" \
+                        "$event_code" "$type_name" >&2
                     return
             fi
 
@@ -130,10 +121,8 @@ get_event() {
             echo "$event_type $event_code"
         # If there is an invalid input for the $event_code
         else
-            # Print the error message
-            echo "$INVALID_INPUT_ERROR:"\
-                "\"$event_code\" should be the numeric event code" >&2
-            # Exit from the function
+            # Print the error message and exit
+            printf "$ERROR_SHOULD_BE_NUMERIC\n" "$event_code" >&2
             return
         fi
     fi
@@ -154,10 +143,8 @@ get_comparison() {
 
     # Check the comparison value for NaN
     if ! [[ "$comp_value" =~ ^-?[0-9]*$ ]]; then
-        # Print the error message
-        echo "$INVALID_INPUT_ERROR:"\
-            "\"$comp_value\" - Not a Number" >&2
-        # Exit from the function
+        # Print the error message and exit
+        printf "$ERROR_NAN\n" "$comp_value" >&2
         return
     fi
 
@@ -173,10 +160,8 @@ get_comparison() {
 
     # Check the comparison type for emptiness
     if [[ -z "$comp_type" ]]; then
-        # Print the error message
-        echo "$INVALID_INPUT_ERROR:"\
-            "\"$comp_sign\" is not an available operator" >&2
-        # Exit from the function
+        # Print the error message and exit
+        printf "$ERROR_INVALID_OPERATOR\n" "$comp_sign" >&2
         return
     fi
 
@@ -242,8 +227,7 @@ get_hotkey_arguments() {
         # If we have an unexpected input
         *)
             # Print the error message
-            echo "$INVALID_INPUT_ERROR:"\
-                "can't recognize the argument - \"$argument\"" >&2
+            printf "$ERROR_CANT_RECOGNIZE_ARGUMENT\n" "$argument" >&2
             ;;
     esac
     readonly comparison
@@ -251,9 +235,8 @@ get_hotkey_arguments() {
     # If it was not possible to get any of the arguments,
     # it means that at some stage we had an error
     if [[ -z "$event" ]] || [[ -z "$comparison" ]]; then
-        # Print the error message
-        echo "[!] The argument \"$argument\" was ignored due to an error" >&2
-        # Exit from the function
+        # Print the error message and exit
+        printf "$ERROR_IGNORE_ARGUMENT\n\n" "$argument" >&2
         return
     fi
 
@@ -263,9 +246,8 @@ get_hotkey_arguments() {
 
 # Check the number of arguments (it must be at least 2)
 if [[ "$#" -lt 2 ]]; then
-    echo -e "Error: you must pass the path to the device and"\
-            "the key combination to the command"\
-            "\nSee the examples using \"--helo\" argument" >&2
+    # Print the error message and exit
+    echo "$ERROR_AT_LEAST_TWO_ARGS" >&2
     exit 140
 fi
 
@@ -288,20 +270,20 @@ done
 
 # Check the number of assembled arguments
 if [[ "${#hotkey_arguments[@]}" -eq 0 ]]; then
-    echo "Error: It is impossible to assemble a hotkey" >&2
+    echo "$ERROR_IMPOSSIBLE_TO_GET_HOTKEY" >&2
     exit 141
 fi
 
 # If the $device_path is empty
 if [[ -z "$device_path" ]]; then
-    echo "Error: the device's path was not passed to the command" >&2
+    echo "$ERROR_NO_DEVICE_PATH" >&2
     exit 142
 fi
 
 # If all is OK, run the evdev (C binary) with the assembled argument list
 # evdev arguments order:
 # <event device path> <command to run> <hotkey argument array>
-evdev $device_path 'pause-focused.sh' ${hotkey_arguments[@]}
+evdev "$device_path" 'pause-focused.sh' ${hotkey_arguments[@]}
 
-# Exit with the successs code
-exit 0
+# Exit with the code of the last command
+exit $?

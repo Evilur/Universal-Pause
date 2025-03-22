@@ -1,0 +1,49 @@
+readonly WARN_PREFIX='[!]'
+readonly ERROR_PREFIX='Error'
+readonly SEE_EXAMPLES="See the examples using '--help' flag"
+
+readonly INVALID_INPUT_ERROR=\
+"$WARN_PREFIX Invalid input"
+
+readonly ERROR_NO_SUCH_EVENT_CODE=\
+"$INVALID_INPUT_ERROR: '%s' - no such an event code"
+
+readonly ERROR_NO_SUCH_EVENT_TYPE=\
+"$INVALID_INPUT_ERROR: '%s' - no such an event type"
+
+readonly ERROR_NO_SUCH_EVENT_CODE_FOR_TYPE=\
+"$INVALID_INPUT_ERROR: '%s' - no such an event code for the type '%s'"
+
+readonly ERROR_SHOULD_BE_NUMERIC=\
+"$INVALID_INPUT_ERROR: '%s' should be the numeric event code"
+
+readonly ERROR_NAN=\
+"$INVALID_INPUT_ERROR: '%s' must be a number"
+
+readonly ERROR_INVALID_OPERATOR=\
+"$INVALID_INPUT_ERROR: '%s' is not an available comparison operator"
+
+readonly ERROR_CANT_RECOGNIZE_ARGUMENT=\
+"$INVALID_INPUT_ERROR: can't recognize the argument '%s'"
+
+readonly ERROR_IGNORE_ARGUMENT=\
+"$WARN_PREFIX The argument '%s' will be ignored due to an error"
+
+readonly ERROR_AT_LEAST_TWO_ARGS=\
+"$ERROR_PREFIX: you must pass at least the path to the
+device and the key combination as command arguments
+$SEE_EXAMPLES"
+
+readonly ERROR_IMPOSSIBLE_TO_GET_HOTKEY=\
+"$ERROR_PREFIX: it is impossible to get a hotkey
+Not a single correct key was passed as an argument
+$SEE_EXAMPLES"
+
+readonly ERROR_NO_DEVICE_PATH=\
+"$ERROR_PREFIX: the correct device's path was not passed to the command"
+
+export readonly START_LISTEN_DEVICE=\
+'Start listening to device input data...'
+
+export readonly DEVICE_IS_DISABLED=\
+'Looks like the input device is disabled'

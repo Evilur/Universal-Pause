@@ -1,0 +1,49 @@
+readonly WARN_PREFIX='[!]'
+readonly ERROR_PREFIX='Ошибка'
+readonly SEE_EXAMPLES="Посмотрите примеры с помощью флага '--help'"
+
+readonly INVALID_INPUT_ERROR=\
+"$WARN_PREFIX Неправильный ввод"
+
+readonly ERROR_NO_SUCH_EVENT_CODE=\
+"$INVALID_INPUT_ERROR: '%s' - такого кода события не существует"
+
+readonly ERROR_NO_SUCH_EVENT_TYPE=\
+"$INVALID_INPUT_ERROR: '%s' - такого типа события не существует"
+
+readonly ERROR_NO_SUCH_EVENT_CODE_FOR_TYPE=\
+"$INVALID_INPUT_ERROR: '%s' - такого кода события не существует для типа '%s'"
+
+readonly ERROR_SHOULD_BE_NUMERIC=\
+"$INVALID_INPUT_ERROR: '%s' должно быть числовым кодом события"
+
+readonly ERROR_NAN=\
+"$INVALID_INPUT_ERROR: '%s' должно быть числом"
+
+readonly ERROR_INVALID_OPERATOR=\
+"$INVALID_INPUT_ERROR: '%s' - недопустимый оператор сравнения"
+
+readonly ERROR_CANT_RECOGNIZE_ARGUMENT=\
+"$INVALID_INPUT_ERROR: невозможно распознать аргумент '%s'"
+
+readonly ERROR_IGNORE_ARGUMENT=\
+"$WARN_PREFIX Аргумент '%s' будет проигнорирован в связи с ошибкой"
+
+readonly ERROR_AT_LEAST_TWO_ARGS=\
+"$ERROR_PREFIX: вы должны предоставить хотя бы путь к устройству
+и комбинацию клавиш в качестве аргумента команды
+$SEE_EXAMPLES"
+
+readonly ERROR_IMPOSSIBLE_TO_GET_HOTKEY=\
+"$ERROR_PREFIX: невозможно получить горяую клавишу
+Не было передано ни одной правильной клавиши
+$SEE_EXAMPLES"
+
+readonly ERROR_NO_DEVICE_PATH=\
+"$ERROR_PREFIX: правильный путь к устройству не был передан"
+
+export readonly START_LISTEN_DEVICE=\
+'Прослушивание входных данных устройства...'
+
+export readonly DEVICE_IS_DISABLED=\
+'Похоже, устройство отключено'

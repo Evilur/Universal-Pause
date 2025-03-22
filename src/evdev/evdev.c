@@ -17,7 +17,7 @@ int main(const int arg_c, const char* const arg_v[])
     hotkey_init((unsigned short)(arg_c - 3), arg_v + 3);
 
     /* Infinite read the events from the device */
-    printf("Start listening to device input data...\n");
+    printf("%s\n", getenv("START_LISTEN_DEVICE"));
     for (;;) {
         /* Read the event
          * In case of an error, exit the loop */
@@ -37,7 +37,7 @@ int main(const int arg_c, const char* const arg_v[])
 
     /* This code is executed only when
      * there is an error in reading the device */
-    printf("Looks like the input device has been disabled");
+    printf("%s\n", getenv("DEVICE_IS_DISABLED"));
     return 100;
 }
 
