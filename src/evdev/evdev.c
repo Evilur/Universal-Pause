@@ -38,7 +38,7 @@ int main(const int arg_c, const char* const arg_v[])
     /* This code is executed only when
      * there is an error in reading the device */
     printf("%s\n", getenv("DEVICE_IS_DISABLED"));
-    return 100;
+    return 143;
 }
 
 void hotkey_init(const unsigned short arg_c, const char* const arg_v[]) {
